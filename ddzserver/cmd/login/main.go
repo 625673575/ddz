@@ -15,6 +15,8 @@ func initlog() {
 	}
 	log.Println("初始化 log4go")
 	log4go.AddFilter("file", log4go.DEBUG, log4go.NewFileLogWriter("./temp/Logs/test.log", false)) //输出到文件,级别为DEBUG,文件名为test.log,每次追加该原文件
+	log4go.AddFilter("file", log4go.ERROR, log4go.NewFileLogWriter("./temp/Logs/test.log", false)) //输出到文件,级别为ERROR,文件名为test.log,每次追加该原文件
+
 	//l4g.LoadConfiguration("log.xml")//使用加载配置文件,类似与java的log4j.propertites
 	log4go.Debug("start server")
 	defer log4go.Close()

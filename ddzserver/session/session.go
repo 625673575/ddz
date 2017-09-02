@@ -8,11 +8,6 @@ import (
 	"fmt"
 )
 
-const STATE_LOGIN_SUCCESS=0
-const STATE_LOGIN_WRONG_PASSWORD=1
-const STATE_LOGIN_NO_USER=2
-const STATE_LOGIN_UNKNOW_ERROR=-1
-
 var SessionMap map[int64]*PlayerSession = make(map[int64]*PlayerSession)
 
 type PlayerSession struct {
@@ -63,21 +58,39 @@ func (sess *PlayerSession)Close(){
 
 }
 func (sess *PlayerSession)GetId()int64{
+	if sess.Info.BasicInfo==nil{
+		log4go.Error("没有登录成功尝试获取信息")
+		return -1
+	}
 	return sess.Info.BasicInfo.Userid
 }
+//代码生成工具的原因这个必须要放到最后面
 func HandleMessage(sess *PlayerSession,data []byte){
-	sess.IsConnect=true
-	x:=new(message.ProtoMessage)
-	proto.Unmarshal(data,x)
-	switch message.REQUEST_TYPE(x.MessageType){
-	case message.REQUEST_TYPE_Login:
-		point:= new(message.LoginRequest)
-		proto.Unmarshal(data,point)
-		HandleLoginFunc(sess,point)
-	case message.REQUEST_TYPE_Match:
-		point:= new(message.MatchRequest)
-		proto.Unmarshal(data,point)
-		HandleMatchFunc(sess,point)
-	default :
-	}
-}
+ sess.IsConnect=true
+ x:=new(message.ProtoMessage)
+ proto.Unmarshal(data,x)
+ switch message.REQUEST_TYPE(x.MessageType){
+ 
+case message.REQUEST_TYPE_Login:
+ point:= new(message.LoginRequest)
+ proto.Unmarshal(x.Data,point)
+ HandleLoginFunc(sess,point)
+
+case message.REQUEST_TYPE_Register:
+ point:= new(message.RegisterRequest)
+ proto.Unmarshal(x.Data,point)
+ HandleRegisterFunc(sess,point)
+
+case message.REQUEST_TYPE_Match:
+ point:= new(message.MatchRequest)
+ proto.Unmarshal(x.Data,point)
+ HandleMatchFunc(sess,point)
+
+case message.REQUEST_TYPE_CancelMatch:
+ point:= new(message.CancelMatchRequest)
+ proto.Unmarshal(x.Data,point)
+ HandleCancelMatchFunc(sess,point)
+ default :
+ }
+ }
+

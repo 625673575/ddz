@@ -11,6 +11,7 @@ const TABLE_USER_INFO="userinfo"
 const COLUMN_USERNAME="username"
 const COLUMN_PASSWORD="password"
 const COLUMN_USERID="userid"
+const COLUMN_ICONID="iconid"
 var SELECT_LOGINUSER_BY_USERNAME string
 var SELECT_LOGINUSER_ALL string
 var SELECT_USERINFO_BY_ID string
